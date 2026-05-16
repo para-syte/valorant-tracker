@@ -14,6 +14,8 @@ Retrieves basic valorant players' statistics such as name, tag, account level, r
 
 ## How to run
 
+*assuming you have Nodejs installed
+
 ```bash
 git clone https://github.com/para-syte/valorant-tracker.git
 cd valorant-tracker
