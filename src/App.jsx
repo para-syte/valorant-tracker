@@ -5,9 +5,13 @@ function App() {
     const [username, setUsername] = useState('')
     const [playerData, setPlayerData] = useState(null)
     const [playerRank, setPlayerRank] = useState(null)
+    const [loading, setLoading] = useState(false)
     const platform = "pc"
     
     const searchPlayer = async () => {
+	setLoading(true)
+	setPlayerData(null)
+	setPlayerRank(null)
 	const [name, tag] = username.split('#')
 	const apiKey = import.meta.env.VITE_HENRIK_API_KEY
 
@@ -35,8 +39,7 @@ function App() {
 
 	const rankData = await rankResponse.json()
 	setPlayerRank(rankData)
-	console.log(rankData)
-	
+	setLoading(false)
     }
 
     return (
@@ -50,6 +53,10 @@ function App() {
 	    />
 	    <button onClick={searchPlayer}>search</button>
 
+	    {loading && (
+		<p>Loading...</p>
+	    )}
+	    
 	    {playerData && playerRank && (
 		<div className="player-card">
 		    <img src={playerData.data.card.small} />
