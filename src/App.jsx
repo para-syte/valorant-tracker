@@ -54,7 +54,9 @@ function App() {
 	    <button onClick={searchPlayer}>search</button>
 
 	    {loading && (
-		<p>Loading...</p>
+		<div className="circle">
+		    <div className="loader"></div>
+		</div>
 	    )}
 	    
 	    {playerData && playerRank && (

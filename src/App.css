@@ -189,3 +189,24 @@
     align-items: center;
     height: 50vh;
 }
+
+.circle {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.loader {
+    border: 8px solid #f3f3f3;
+    border-top: 8px solid #3498db;
+    border-radius: 50%;
+    align-items: center;
+    width: 60px;
+    height: 60px;
+    animation: spins 2s linear infinite;
+}
+
+@keyframes spins {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
