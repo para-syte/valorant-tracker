@@ -6,6 +6,7 @@ function App() {
     const [playerData, setPlayerData] = useState(null)
     const [playerRank, setPlayerRank] = useState(null)
     const [loading, setLoading] = useState(false)
+    const [matchList, setMatchList] = useState(null)
     const platform = "pc"
     
     const searchPlayer = async () => {
@@ -39,6 +40,19 @@ function App() {
 
 	const rankData = await rankResponse.json()
 	setPlayerRank(rankData)
+
+	const matchListResponse = await fetch (
+	    `https://api.henrikdev.xyz/valorant/v3/matches/${region}/${name}/${tag}`,
+	    {
+		headers: {
+		    Authorization: apiKey
+		}
+	    }
+	)
+
+	const matchListData = await matchListResponse.json()
+	setMatchList(matchListData)
+	console.log(matchListData)
 	setLoading(false)
     }
 
@@ -59,7 +73,8 @@ function App() {
 		</div>
 	    )}
 	    
-	    {playerData && playerRank && (
+	    {playerData && playerRank && matchList && (
+		<>
 		<div className="player-card">
 		    <img src={playerData.data.card.small} />
 		    <div>
@@ -72,8 +87,18 @@ function App() {
 			{playerData.data.region}
 			<br />
 			{`${playerRank.data.current.tier.name}: ${playerRank.data.current.rr}rr`}
+			<br />
 		    </div>
 		</div>
+		    {matchList.data.map(match => (
+			/*currently scores sometimes displaying incorrect scores (figure out why
+			    ) and right now displaying ALL gamemode scorelines, add feature
+			    to show scorelines for different gamemodes.*/
+			<div key={match.metadata.matchid}>{match.metadata.map}
+			    {` ${match.teams.blue.rounds_won}:${match.teams.red.rounds_won}`}
+			</div>
+		    ))}
+		</>
 	    )}
 	</div>
     )
