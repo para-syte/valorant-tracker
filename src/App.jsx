@@ -90,14 +90,26 @@ function App() {
 			<br />
 		    </div>
 		</div>
-		    {matchList.data.map(match => (
-			/*currently scores sometimes displaying incorrect scores (figure out why
-			    ) and right now displaying ALL gamemode scorelines, add feature
-			    to show scorelines for different gamemodes.*/
-			<div key={match.metadata.matchid}>{match.metadata.map}
-			    {` ${match.teams.blue.rounds_won}:${match.teams.red.rounds_won}`}
-			</div>
-		    ))}
+		    {matchList.data.map(match => {
+			
+			/*
+			  currently only showing most recent scorelines, want to add
+			  feature to choose what game mode to show.
+			*/
+			
+			const playersInBlue = match.players.blue.find(p =>
+			    p.name === playerData.data.name && p.tag === playerData.data.tag
+			)
+			return (
+			    <div key={match.metadata.matchid}>{match.metadata.map}
+				{" "}
+				{playersInBlue
+				 ? `${match.teams.blue.rounds_won}:${match.teams.blue.rounds_lost}`
+				 : `${match.teams.red.rounds_won}:${match.teams.red.rounds_lost}`
+				}
+			    </div>
+			)
+		    })}
 		</>
 	    )}
 	</div>
