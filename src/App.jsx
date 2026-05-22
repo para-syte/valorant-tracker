@@ -64,6 +64,7 @@ function App() {
 		placeholder="username#NA1"
 		value={username}
 		onChange={(e) => setUsername(e.target.value)}
+		onKeyDown={(e) => e.key === 'Enter' && searchPlayer()}
 	    />
 	    <button onClick={searchPlayer}>search</button>
 
