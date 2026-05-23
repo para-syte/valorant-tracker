@@ -1,3 +1,9 @@
+/*
+  current version added feature to be able to hit enter and searches for user,
+  added drop down menu to select game mode and display the score lines
+  - need to fix unrated provoking a blank screen when chosen in drop down menu
+ */
+
 import { useState } from 'react'
 import './App.css'
 
@@ -7,9 +13,22 @@ function App() {
     const [playerRank, setPlayerRank] = useState(null)
     const [loading, setLoading] = useState(false)
     const [matchList, setMatchList] = useState(null)
+    const [region, setRegion] = useState(null)
+    const [gameMode, setGameMode] = useState('Competitive')
     const platform = "pc"
+
+    const fetchMatches = async (region, name, tag, mode) => {
+	const matchListResponse = await fetch (
+	    `https://api.henrikdev.xyz/valorant/v3/matches/${region}/${name}/${tag}?mode=${mode.toLowerCase()}&size=10`,
+	    { headers: { Authorization: import.meta.env.VITE_HENRIK_API_KEY } }
+	)
+	const matchListData = await matchListResponse.json()
+	setMatchList(matchListData)
+	setLoading(false)
+    }
     
     const searchPlayer = async () => {
+	setGameMode('Competitive')
 	setLoading(true)
 	setPlayerData(null)
 	setPlayerRank(null)
@@ -27,10 +46,10 @@ function App() {
 
 	const accountData = await accountResponse.json()
 	setPlayerData(accountData)
-	const region = accountData.data.region
+	setRegion(accountData.data.region)
 
 	const rankResponse = await fetch (
-	    `https://api.henrikdev.xyz/valorant/v3/mmr/${region}/${platform}/${name}/${tag}`,
+	    `https://api.henrikdev.xyz/valorant/v3/mmr/${accountData.data.region}/${platform}/${name}/${tag}`,
 	    {
 		headers: {
 		    Authorization: apiKey
@@ -41,19 +60,7 @@ function App() {
 	const rankData = await rankResponse.json()
 	setPlayerRank(rankData)
 
-	const matchListResponse = await fetch (
-	    `https://api.henrikdev.xyz/valorant/v3/matches/${region}/${name}/${tag}`,
-	    {
-		headers: {
-		    Authorization: apiKey
-		}
-	    }
-	)
-
-	const matchListData = await matchListResponse.json()
-	setMatchList(matchListData)
-	console.log(matchListData)
-	setLoading(false)
+	await fetchMatches(accountData.data.region, name, tag, 'Competitive')
     }
 
     return (
@@ -91,13 +98,23 @@ function App() {
 			<br />
 		    </div>
 		</div>
-		    {matchList.data.map(match => {
-			
-			/*
-			  currently only showing most recent scorelines, want to add
-			  feature to choose what game mode to show.
-			*/
-			
+		    <label for="game-mode-select"></label>
+		    <select name="gamemodes"
+			    id="game-mode-select"
+			    onChange={(e) => {
+				setGameMode(e.target.value)
+				const [name, tag] = username.split('#')
+				fetchMatches(region, name, tag, e.target.value)
+			    }}
+			    value={gameMode}
+		    >
+			<option value="">--Game mode--</option>
+			<option value="Competitive">Competitive</option>
+			<option value="Swiftplay">Switfplay</option>
+			<option value="Deathmatch">Deathmatch</option>
+			<option value="Unrated">Unrated</option>
+		    </select>
+		    {matchList.data.filter(match => match.metadata.mode === gameMode).map(match => {
 			const playersInBlue = match.players.blue.find(p =>
 			    p.name === playerData.data.name && p.tag === playerData.data.tag
 			)
