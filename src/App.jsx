@@ -2,6 +2,8 @@
   current version fixed the blank screen when choosing unrated
   - need to fix deathmatch scorelines, currently displaying null:null
   - need to fix error being produced when choosing game modes amongst privated accounts
+  - if invalid username, display error or could not fetch message
+  - if not recent game mode data display error or could not fetch message
  */
 
 import { useState } from 'react'
