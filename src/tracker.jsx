@@ -2,20 +2,20 @@
   current version fixed the blank screen when choosing unrated
   - need to fix deathmatch scorelines, currently displaying null:null
   - need to fix error being produced when choosing game modes amongst privated accounts
-  - if invalid username, display error or could not fetch message
-  - if not recent game mode data display error or could not fetch message
+  - if no recent game mode data display error or could not fetch message
  */
 
 import { useState } from 'react'
-import './App.css'
+import './tracker.css'
 
-function App() {
+function Tracker() {
     const [username, setUsername] = useState('')
     const [playerData, setPlayerData] = useState(null)
     const [playerRank, setPlayerRank] = useState(null)
     const [loading, setLoading] = useState(false)
     const [matchList, setMatchList] = useState(null)
     const [region, setRegion] = useState(null)
+    const [error, setError] = useState(null)
     const [gameMode, setGameMode] = useState('Competitive')
     const platform = "pc"
 
@@ -35,6 +35,7 @@ function App() {
 	setLoading(true)
 	setPlayerData(null)
 	setPlayerRank(null)
+	setError(null)
 	const [name, tag] = username.split('#')
 	const apiKey = import.meta.env.VITE_HENRIK_API_KEY
 
@@ -49,6 +50,13 @@ function App() {
 
 	const accountData = await accountResponse.json()
 	setPlayerData(accountData)
+
+	if(!accountData.data) {
+	    setError('Player not  found')
+	    setLoading(false)
+	    return
+	}
+
 	setRegion(accountData.data.region)
 
 	const rankResponse = await fetch (
@@ -83,6 +91,8 @@ function App() {
 		    <div className="loader"></div>
 		</div>
 	    )}
+
+	    {error && <p style={{ color: 'red' }}>{error}</p>}
 	    
 	    {playerData && playerRank && matchList && (
 		<>
@@ -137,4 +147,4 @@ function App() {
     )
 }
 
-export default App
+export default Tracker
