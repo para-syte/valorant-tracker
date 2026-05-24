@@ -1,7 +1,7 @@
 /*
-  current version added feature to be able to hit enter and searches for user,
-  added drop down menu to select game mode and display the score lines
-  - need to fix unrated provoking a blank screen when chosen in drop down menu
+  current version fixed the blank screen when choosing unrated
+  - need to fix deathmatch scorelines, currently displaying null:null
+  - need to fix error being produced when choosing game modes amongst privated accounts
  */
 
 import { useState } from 'react'
@@ -20,7 +20,8 @@ function App() {
     const fetchMatches = async (region, name, tag, mode) => {
 	const matchListResponse = await fetch (
 	    `https://api.henrikdev.xyz/valorant/v3/matches/${region}/${name}/${tag}?mode=${mode.toLowerCase()}&size=10`,
-	    { headers: { Authorization: import.meta.env.VITE_HENRIK_API_KEY } }
+	    { headers: {
+		Authorization: import.meta.env.VITE_HENRIK_API_KEY } }
 	)
 	const matchListData = await matchListResponse.json()
 	setMatchList(matchListData)
@@ -98,7 +99,7 @@ function App() {
 			<br />
 		    </div>
 		</div>
-		    <label for="game-mode-select"></label>
+		    <label htmlFor="game-mode-select"></label>
 		    <select name="gamemodes"
 			    id="game-mode-select"
 			    onChange={(e) => {
@@ -114,7 +115,7 @@ function App() {
 			<option value="Deathmatch">Deathmatch</option>
 			<option value="Unrated">Unrated</option>
 		    </select>
-		    {matchList.data.filter(match => match.metadata.mode === gameMode).map(match => {
+		    {matchList.data.filter(match => match.metadata && match.metadata.mode === gameMode).map(match => {
 			const playersInBlue = match.players.blue.find(p =>
 			    p.name === playerData.data.name && p.tag === playerData.data.tag
 			)
