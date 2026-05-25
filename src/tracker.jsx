@@ -3,6 +3,8 @@
   - need to fix deathmatch scorelines, currently displaying null:null
   - need to fix error being produced when choosing game modes amongst privated accounts
   - if no recent game mode data display error or could not fetch message
+  - currently displaying stats and still loading with the loading bar, fix it so that
+    everything loads (loading bar) first then display everything
  */
 
 import { useState } from 'react'
@@ -128,6 +130,21 @@ function Tracker() {
 			<option value="Unrated">Unrated</option>
 		    </select>
 		    {matchList.data.filter(match => match.metadata && match.metadata.mode === gameMode).map(match => {
+			if(!match.players) return null
+
+			if(gameMode === 'Deathmatch') {
+			    const player = match.players.all?.find(p =>
+				p.name === playerData.data.name && p.tag === playerData.data.tag
+			    )
+
+			    const won = player?.stats?.placement === 1
+
+			    return (
+				<div key={match.metadata.matchid}>
+				    {match.metadata.map}: {won ? 'W' : 'L'}
+				</div>
+			    )
+			}
 			const playersInBlue = match.players.blue.find(p =>
 			    p.name === playerData.data.name && p.tag === playerData.data.tag
 			)
