@@ -14,6 +14,7 @@ Open http://localhost:5173/
 
 ## How it works
 *this api can access privated accounts so ensure you have consent to access accounts (if privated)*
+
 Retrieves basic valorant players' statistics such as name, tag, account level, rank, and more.
 
 ## Tech used
