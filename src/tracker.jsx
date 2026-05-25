@@ -1,10 +1,7 @@
 /*
   current version fixed the blank screen when choosing unrated
-  - need to fix deathmatch scorelines, currently displaying null:null
   - need to fix error being produced when choosing game modes amongst privated accounts
   - if no recent game mode data display error or could not fetch message
-  - currently displaying stats and still loading with the loading bar, fix it so that
-    everything loads (loading bar) first then display everything
  */
 
 import { useState } from 'react'
@@ -51,15 +48,12 @@ function Tracker() {
 	)
 
 	const accountData = await accountResponse.json()
-	setPlayerData(accountData)
 
 	if(!accountData.data) {
 	    setError('Player not  found')
 	    setLoading(false)
 	    return
 	}
-
-	setRegion(accountData.data.region)
 
 	const rankResponse = await fetch (
 	    `https://api.henrikdev.xyz/valorant/v3/mmr/${accountData.data.region}/${platform}/${name}/${tag}`,
@@ -71,9 +65,12 @@ function Tracker() {
 	)
 
 	const rankData = await rankResponse.json()
-	setPlayerRank(rankData)
 
 	await fetchMatches(accountData.data.region, name, tag, 'Competitive')
+	
+	setPlayerRank(rankData)
+	setRegion(accountData.data.region)
+	setPlayerData(accountData)
     }
 
     return (
