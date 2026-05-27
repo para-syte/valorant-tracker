@@ -3,6 +3,7 @@
   of the users of being search (if privated)
   - need to fix error being produced when choosing game modes amongst privated accounts
   - if no recent game mode data display error or could not fetch message
+  - ultimately fix ui to my liking
  */
 
 import { useState } from 'react'
