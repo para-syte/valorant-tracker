@@ -1,4 +1,4 @@
-/*
+3/*
   this application can access accounts which are privated so before using please have consent
   of the users of being search (if privated)
   - need to fix error being produced when choosing game modes amongst privated accounts
@@ -11,16 +11,21 @@ import './tracker.css'
 
 function Tracker() {
     const [username, setUsername] = useState('')
+    
     const [playerData, setPlayerData] = useState(null)
     const [playerRank, setPlayerRank] = useState(null)
-    const [loading, setLoading] = useState(false)
     const [matchList, setMatchList] = useState(null)
     const [region, setRegion] = useState(null)
     const [error, setError] = useState(null)
+    
+    const [loading, setLoading] = useState(false)
+    const [matchLoad, setMatchLoad] = useState(false)
+    
     const [gameMode, setGameMode] = useState('Competitive')
     const platform = "pc"
 
     const fetchMatches = async (region, name, tag, mode) => {
+	setMatchLoad(true)
 	const matchListResponse = await fetch (
 	    `https://api.henrikdev.xyz/valorant/v3/matches/${region}/${name}/${tag}?mode=${mode.toLowerCase()}&size=10`,
 	    { headers: {
@@ -28,7 +33,7 @@ function Tracker() {
 	)
 	const matchListData = await matchListResponse.json()
 	setMatchList(matchListData)
-	setLoading(false)
+	setMatchLoad(false)
     }
     
     const searchPlayer = async () => {
@@ -73,6 +78,7 @@ function Tracker() {
 	setPlayerRank(rankData)
 	setRegion(accountData.data.region)
 	setPlayerData(accountData)
+	setLoading(false)
     }
 
     return (
@@ -100,7 +106,7 @@ function Tracker() {
 		<div className="player-card">
 		    <img src={playerData.data.card.small} />
 		    <div>
-			{playerData.data.account_level}
+			level: {playerData.data.account_level}
 			<br />
 			{playerData.data.name}
 			#
@@ -117,17 +123,26 @@ function Tracker() {
 			    id="game-mode-select"
 			    onChange={(e) => {
 				setGameMode(e.target.value)
+				setMatchLoad(true)
 				const [name, tag] = username.split('#')
 				fetchMatches(region, name, tag, e.target.value)
 			    }}
+			    
 			    value={gameMode}
 		    >
+			
 			<option value="">--Game mode--</option>
 			<option value="Competitive">Competitive</option>
 			<option value="Swiftplay">Switfplay</option>
 			<option value="Deathmatch">Deathmatch</option>
 			<option value="Unrated">Unrated</option>
 		    </select>
+
+		    {matchLoad && (
+			<div className="circle">
+			    <div className="loader"></div>
+			</div>
+		    )}
 		    {matchList.data.filter(match => match.metadata && match.metadata.mode === gameMode).map(match => {
 			if(!match.players) return null
 
