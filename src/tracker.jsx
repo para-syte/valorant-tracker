@@ -143,35 +143,54 @@ function Tracker() {
 			    <div className="loader"></div>
 			</div>
 		    )}
-		    {matchList.data.filter(match => match.metadata && match.metadata.mode === gameMode).map(match => {
-			if(!match.players) return null
 
-			if(gameMode === 'Deathmatch') {
-			    const player = match.players.all?.find(p =>
-				p.name === playerData.data.name && p.tag === playerData.data.tag
-			    )
+		    {!matchLoad && (
+			<table>
+			    <thead>
+				<tr>
+				    <th>Map</th>
+				    <th>Score</th>
+				</tr>
+			    </thead>
+			    <tbody>
+				
+				{matchList.data.filter(match => match.metadata && match.metadata.mode === gameMode).map(match => {
+				    if(!match.players) return null
 
-			    const won = player?.stats?.placement === 1
+				    if(gameMode === 'Deathmatch') {
+					const player = match.players.all?.find(p =>
+					    p.name === playerData.data.name && p.tag === playerData.data.tag
+					)
 
-			    return (
-				<div key={match.metadata.matchid}>
-				    {match.metadata.map}: {won ? 'W' : 'L'}
-				</div>
-			    )
-			}
-			const playersInBlue = match.players.blue.find(p =>
-			    p.name === playerData.data.name && p.tag === playerData.data.tag
-			)
-			return (
-			    <div key={match.metadata.matchid}>{match.metadata.map}
-				{" "}
-				{playersInBlue
-				 ? `${match.teams.blue.rounds_won}:${match.teams.blue.rounds_lost}`
-				 : `${match.teams.red.rounds_won}:${match.teams.red.rounds_lost}`
-				}
-			    </div>
-			)
-		    })}
+					const won = player?.stats?.placement === 1
+
+					return (
+					    <tr key={match.metadata.matchid}>
+						<td>{match.metadata.map}</td>
+						<td>{won ? 'W' : 'L'}</td>
+					    </tr>
+					)
+				    }
+				    const playersInBlue = match.players.blue.find(p =>
+					p.name === playerData.data.name && p.tag === playerData.data.tag
+				    )
+				    return (
+					<tr key={match.metadata.matchid}>
+					    <td>{match.metadata.map}</td>
+					    <td>
+						{" "}
+						{playersInBlue
+						 ? `${match.teams.blue.rounds_won}:${match.teams.blue.rounds_lost}`
+						 : `${match.teams.red.rounds_won}:${match.teams.red.rounds_lost}`
+						}
+					    </td>
+					</tr>
+				    )
+				})}
+			    </tbody>
+			</table>
+		    )}
+
 		</>
 	    )}
 	</div>
