@@ -22,5 +22,3 @@ Retrieves basic valorant players' statistics such as name, tag, account level, r
 - React
 - Js/CSS
 - henrikdev unofficial Valorant API
-
-//test
