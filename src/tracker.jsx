@@ -4,8 +4,9 @@
   - need to fix error being produced when choosing game modes amongst privated accounts
   - if no recent game mode data display error or could not fetch message
   - ultimately fix ui to my liking
+  - fix data to split into the different teams, then organize based on ACS
 
-  - update: making toggle buttong for match data, i.e. players, kills, scorelines, etc.
+  - update: added player data (K A D)
  */
 
 import { useState, Fragment } from 'react'
@@ -155,8 +156,8 @@ function Tracker() {
 				    <th>Score</th>
 				</tr>
 			    </thead>
+			    
 			    <tbody>
-				
 				{matchList.data.filter(match => match.metadata && match.metadata.mode === gameMode).map(match => {
 				    if(!match.players) return null
 
@@ -168,22 +169,22 @@ function Tracker() {
 					const won = player?.stats?.placement === 1
 
 					return (
-							<Fragment key={match.metadata.matchid}>
-								<tr
-									onClick={() => setExpandMatch (
-										expandMatch === match.metadata.matchid ? null : match.metadata.matchid
-									)}
-									style={{ cursor: 'pointer' }}
-								>
-									<td>{match.metadata.map}</td>
-									<td>{won ? 'W' : 'L'}</td>
-								</tr>
-								{expandMatch === match.metadata.matchid && (
-									<tr>
-										<td colSpan="2">data</td>
-									</tr>
-								)}
-							</Fragment>
+					    <Fragment key={match.metadata.matchid}>
+						<tr
+						    onClick={() => setExpandMatch (
+							expandMatch === match.metadata.matchid ? null : match.metadata.matchid
+						    )}
+						    style={{ cursor: 'pointer' }}
+						>
+						    <td>{match.metadata.map}</td>
+						    <td>{won ? 'W' : 'L'}</td>
+						</tr>
+						{expandMatch === match.metadata.matchid && (
+						    <tr>
+							<td colSpan="2">data</td>
+						    </tr>
+						)}
+					    </Fragment>
 					)}
 					
 				    const playersInBlue = match.players.blue.find(p =>
@@ -191,28 +192,51 @@ function Tracker() {
 				    )
 					
 				    return (
-						<Fragment key={match.metadata.matchid}>
-							<tr
-							onClick={() => setExpandMatch (
-								expandMatch === match.metadata.matchid ? null : match.metadata.matchid
-							)}
-							style={{ cursor: 'pointer' }}
-						>
-							<td>{match.metadata.map}</td>
-							<td>
-								{" "}
-								{playersInBlue
-								? `${match.teams.blue.rounds_won}:${match.teams.blue.rounds_lost}`
-								: `${match.teams.red.rounds_won}:${match.teams.red.rounds_lost}`
-								}
-							</td>
-						</tr>
-						{expandMatch === match.metadata.matchid && (
-							<tr>
-								<td colSpan="2">data</td>
-							</tr>
+					<Fragment key={match.metadata.matchid}>
+					    <tr
+						onClick={() => setExpandMatch (
+						    expandMatch === match.metadata.matchid ? null : match.metadata.matchid
 						)}
-						</Fragment>
+						style={{ cursor: 'pointer' }}
+					    >
+						<td>{match.metadata.map}</td>
+						<td>
+						    {" "}
+						    {playersInBlue
+						     ? `${match.teams.blue.rounds_won}:${match.teams.blue.rounds_lost}`
+						     : `${match.teams.red.rounds_won}:${match.teams.red.rounds_lost}`
+						    }
+						</td>
+					    </tr>
+					    {expandMatch === match.metadata.matchid && (
+						<tr>
+						    <td colSpan="2">
+							{/* added table to display match data i.e. players K A D */}
+							<table>
+							    <thead>
+								<tr>
+								    <th>Player</th>
+								    <th>K</th>
+								    <th>A</th>
+								    <th>D</th>
+								    
+								</tr>
+							    </thead>
+							    <tbody>
+								{match.players.blue.concat(match.players.red).map(player => (
+								    <tr key={player.puuid}>
+									<td>{player.name}</td>
+									<td>{player.stats.kills}</td>
+									<td>{player.stats.assists}</td>
+									<td>{player.stats.deaths}</td>
+								    </tr>
+								))}
+							    </tbody>
+							</table>
+						    </td>
+						</tr>
+					    )}
+					</Fragment>
 				    )})}
 			    </tbody>
 			</table>
