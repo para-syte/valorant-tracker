@@ -1,12 +1,14 @@
-3/*
+/*
   this application can access accounts which are privated so before using please have consent
   of the users of being search (if privated)
   - need to fix error being produced when choosing game modes amongst privated accounts
   - if no recent game mode data display error or could not fetch message
   - ultimately fix ui to my liking
+
+  - update: making toggle buttong for match data, i.e. players, kills, scorelines, etc.
  */
 
-import { useState } from 'react'
+import { useState, Fragment } from 'react'
 import './tracker.css'
 
 function Tracker() {
@@ -17,6 +19,7 @@ function Tracker() {
     const [matchList, setMatchList] = useState(null)
     const [region, setRegion] = useState(null)
     const [error, setError] = useState(null)
+	const [expandMatch, setExpandMatch] = useState(null)
     
     const [loading, setLoading] = useState(false)
     const [matchLoad, setMatchLoad] = useState(false)
@@ -165,32 +168,55 @@ function Tracker() {
 					const won = player?.stats?.placement === 1
 
 					return (
-					    <tr key={match.metadata.matchid}>
-						<td>{match.metadata.map}</td>
-						<td>{won ? 'W' : 'L'}</td>
-					    </tr>
-					)
-				    }
+							<Fragment key={match.metadata.matchid}>
+								<tr
+									onClick={() => setExpandMatch (
+										expandMatch === match.metadata.matchid ? null : match.metadata.matchid
+									)}
+									style={{ cursor: 'pointer' }}
+								>
+									<td>{match.metadata.map}</td>
+									<td>{won ? 'W' : 'L'}</td>
+								</tr>
+								{expandMatch === match.metadata.matchid && (
+									<tr>
+										<td colSpan="2">data</td>
+									</tr>
+								)}
+							</Fragment>
+					)}
+					
 				    const playersInBlue = match.players.blue.find(p =>
 					p.name === playerData.data.name && p.tag === playerData.data.tag
 				    )
+					
 				    return (
-					<tr key={match.metadata.matchid}>
-					    <td>{match.metadata.map}</td>
-					    <td>
-						{" "}
-						{playersInBlue
-						 ? `${match.teams.blue.rounds_won}:${match.teams.blue.rounds_lost}`
-						 : `${match.teams.red.rounds_won}:${match.teams.red.rounds_lost}`
-						}
-					    </td>
-					</tr>
-				    )
-				})}
+						<Fragment key={match.metadata.matchid}>
+							<tr
+							onClick={() => setExpandMatch (
+								expandMatch === match.metadata.matchid ? null : match.metadata.matchid
+							)}
+							style={{ cursor: 'pointer' }}
+						>
+							<td>{match.metadata.map}</td>
+							<td>
+								{" "}
+								{playersInBlue
+								? `${match.teams.blue.rounds_won}:${match.teams.blue.rounds_lost}`
+								: `${match.teams.red.rounds_won}:${match.teams.red.rounds_lost}`
+								}
+							</td>
+						</tr>
+						{expandMatch === match.metadata.matchid && (
+							<tr>
+								<td colSpan="2">data</td>
+							</tr>
+						)}
+						</Fragment>
+				    )})}
 			    </tbody>
 			</table>
 		    )}
-
 		</>
 	    )}
 	</div>
