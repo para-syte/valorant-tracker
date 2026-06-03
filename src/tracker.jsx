@@ -223,17 +223,35 @@ function Tracker() {
 								</tr>
 							    </thead>
 							    <tbody>
-								{match.players.blue.concat(match.players.red).map(player => {
-								    const acs = Math.round(player.stats.score / match.metadata.rounds_played)
-								    return (
-									<tr key={player.puuid}>
-									    <td>{player.name}</td>
-									    <td>{acs}</td>
-									    <td>{player.stats.kills}</td>
-									    <td>{player.stats.assists}</td>
-									    <td>{player.stats.deaths}</td>
-									</tr>
-								    )})}
+								<>
+								    {match.players.blue.map(player => {
+									const acs = Math.round(player.stats.score / match.metadata.rounds_played)
+									return (
+									    <tr key={player.puuid}>
+										<td>{player.name}</td>
+										<td>{acs}</td>
+										<td>{player.stats.kills}</td>
+										<td>{player.stats.assists}</td>
+										<td>{player.stats.deaths}</td>
+									    </tr>
+									)
+								    })}
+								    <tr>
+									<td colSpan="5" style={{ borderTop: '1px solid gray' }}></td>
+								    </tr>
+								    {match.players.red.map(player => {
+									const acs = Math.round(player.stats.score / match.metadata.rounds_played)
+									return (
+									    <tr key={player.puuid}>
+										<td>{player.name}</td>
+										<td>{acs}</td>
+										<td>{player.stats.kills}</td>
+										<td>{player.stats.assists}</td>
+										<td>{player.stats.deaths}</td>
+									    </tr>
+									)
+								    })}
+								</>
 							    </tbody>
 							</table>
 						    </td>
