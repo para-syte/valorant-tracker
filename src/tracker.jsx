@@ -20,7 +20,7 @@ function Tracker() {
     const [matchList, setMatchList] = useState(null)
     const [region, setRegion] = useState(null)
     const [error, setError] = useState(null)
-	const [expandMatch, setExpandMatch] = useState(null)
+    const [expandMatch, setExpandMatch] = useState(null)
     
     const [loading, setLoading] = useState(false)
     const [matchLoad, setMatchLoad] = useState(false)
@@ -216,21 +216,24 @@ function Tracker() {
 							    <thead>
 								<tr>
 								    <th>Player</th>
+								    <th>ACS</th>
 								    <th>K</th>
 								    <th>A</th>
 								    <th>D</th>
-								    
 								</tr>
 							    </thead>
 							    <tbody>
-								{match.players.blue.concat(match.players.red).map(player => (
-								    <tr key={player.puuid}>
-									<td>{player.name}</td>
-									<td>{player.stats.kills}</td>
-									<td>{player.stats.assists}</td>
-									<td>{player.stats.deaths}</td>
-								    </tr>
-								))}
+								{match.players.blue.concat(match.players.red).map(player => {
+								    const acs = Math.round(player.stats.score / match.metadata.rounds_played)
+								    return (
+									<tr key={player.puuid}>
+									    <td>{player.name}</td>
+									    <td>{acs}</td>
+									    <td>{player.stats.kills}</td>
+									    <td>{player.stats.assists}</td>
+									    <td>{player.stats.deaths}</td>
+									</tr>
+								    )})}
 							    </tbody>
 							</table>
 						    </td>
