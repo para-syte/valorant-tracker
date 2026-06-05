@@ -5,7 +5,7 @@
   - if no recent game mode data display error or could not fetch message
   - ultimately fix ui to my liking
 
-  - update: separated teams, next organize by ACS
+  - update: added a border for leaderboard data. next is starting to add color
  */
 
 import { useState, Fragment } from 'react'
@@ -211,7 +211,7 @@ function Tracker() {
 						<tr>
 						    <td colSpan="2">
 							{/* added table to display match data i.e. players K A D */}
-							<table>
+							<table className="leaderboard-box">
 							    <thead>
 								<tr>
 								    <th>Player</th>
