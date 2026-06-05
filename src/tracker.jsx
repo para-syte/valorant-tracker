@@ -4,9 +4,8 @@
   - need to fix error being produced when choosing game modes amongst privated accounts
   - if no recent game mode data display error or could not fetch message
   - ultimately fix ui to my liking
-  - fix data to split into the different teams, then organize based on ACS
 
-  - update: added player data (K A D)
+  - update: separated teams, next organize by ACS
  */
 
 import { useState, Fragment } from 'react'
@@ -224,7 +223,8 @@ function Tracker() {
 							    </thead>
 							    <tbody>
 								<>
-								    {match.players.blue.map(player => {
+								    {/*using slice() to not modify original array incase i want to use for something in the future*/}
+								    {match.players.blue.slice().sort((a, b) => b.stats.score - a.stats.score).map(player => {
 									const acs = Math.round(player.stats.score / match.metadata.rounds_played)
 									return (
 									    <tr key={player.puuid}>
@@ -239,7 +239,7 @@ function Tracker() {
 								    <tr>
 									<td colSpan="5" style={{ borderTop: '1px solid gray' }}></td>
 								    </tr>
-								    {match.players.red.map(player => {
+								    {match.players.red.slice().sort((a, b) => b.stats.score - a.stats.score).map(player => {
 									const acs = Math.round(player.stats.score / match.metadata.rounds_played)
 									return (
 									    <tr key={player.puuid}>
