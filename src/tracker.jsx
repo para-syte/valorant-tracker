@@ -3,9 +3,10 @@
   of the users of being search (if privated)
   - need to fix error being produced when choosing game modes amongst privated accounts
   - if no recent game mode data display error or could not fetch message
+  - don't forget to add deathmatch data
   - ultimately fix ui to my liking
 
-  - update: added a border for leaderboard data. next is starting to add color
+  - update: added a border for leaderboard data. next is to add button feature to go to player from leaderboard
  */
 
 import { useState, Fragment } from 'react'
@@ -178,6 +179,8 @@ function Tracker() {
 						    <td>{match.metadata.map}</td>
 						    <td>{won ? 'W' : 'L'}</td>
 						</tr>
+						
+						{/*ADD DEATHMATCH DATA*/}
 						{expandMatch === match.metadata.matchid && (
 						    <tr>
 							<td colSpan="2">data</td>
@@ -228,7 +231,7 @@ function Tracker() {
 									const acs = Math.round(player.stats.score / match.metadata.rounds_played)
 									return (
 									    <tr key={player.puuid}>
-										<td>{player.name}</td>
+										<td>{player.name}#{player.tag}</td>
 										<td>{acs}</td>
 										<td>{player.stats.kills}</td>
 										<td>{player.stats.assists}</td>
@@ -243,7 +246,7 @@ function Tracker() {
 									const acs = Math.round(player.stats.score / match.metadata.rounds_played)
 									return (
 									    <tr key={player.puuid}>
-										<td>{player.name}</td>
+										<td>{player.name}#{player.tag}</td>
 										<td>{acs}</td>
 										<td>{player.stats.kills}</td>
 										<td>{player.stats.assists}</td>
