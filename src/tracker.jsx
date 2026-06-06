@@ -230,7 +230,7 @@ function Tracker() {
 								    {match.players.blue.slice().sort((a, b) => b.stats.score - a.stats.score).map(player => {
 									const acs = Math.round(player.stats.score / match.metadata.rounds_played)
 									return (
-									    <tr key={player.puuid}>
+									    <tr key={player.puuid} onClick={() => console.log(player.name)} style={{ cursor: 'pointer' }}>
 										<td>{player.name}#{player.tag}</td>
 										<td>{acs}</td>
 										<td>{player.stats.kills}</td>
@@ -245,7 +245,7 @@ function Tracker() {
 								    {match.players.red.slice().sort((a, b) => b.stats.score - a.stats.score).map(player => {
 									const acs = Math.round(player.stats.score / match.metadata.rounds_played)
 									return (
-									    <tr key={player.puuid}>
+									    <tr key={player.puuid} onClick={() => console.log(player.name)} style={{ cursor: 'pointer' }}>
 										<td>{player.name}#{player.tag}</td>
 										<td>{acs}</td>
 										<td>{player.stats.kills}</td>
