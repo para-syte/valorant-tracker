@@ -6,7 +6,7 @@
   - don't forget to add deathmatch data
   - ultimately fix ui to my liking
 
-  - update: added a border for leaderboard data. next is to add button feature to go to player from leaderboard
+  - update: added button feature to click on players from leaderboard data. next is pull up that clicked players' data
  */
 
 import { useState, Fragment } from 'react'
@@ -40,13 +40,12 @@ function Tracker() {
 	setMatchLoad(false)
     }
     
-    const searchPlayer = async () => {
+    const searchPlayer = async (name, tag) => {
 	setGameMode('Competitive')
 	setLoading(true)
 	setPlayerData(null)
 	setPlayerRank(null)
 	setError(null)
-	const [name, tag] = username.split('#')
 	const apiKey = import.meta.env.VITE_HENRIK_API_KEY
 
 	const accountResponse = await fetch (
