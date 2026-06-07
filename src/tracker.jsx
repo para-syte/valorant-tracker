@@ -6,7 +6,7 @@
   - don't forget to add deathmatch data
   - ultimately fix ui to my liking
 
-  - update: added button feature to click on players from leaderboard data. next is pull up that clicked players' data
+  - update: added clicking and retrieving data when clicked from leaderboard. next is to close leaderboard table when clicking on player
  */
 
 import { useState, Fragment } from 'react'
@@ -40,6 +40,7 @@ function Tracker() {
 	setMatchLoad(false)
     }
     
+    // searchPlayer method to search for specific player from search bar or leaderboard button
     const searchPlayer = async (name, tag) => {
 	setGameMode('Competitive')
 	setLoading(true)
@@ -48,6 +49,7 @@ function Tracker() {
 	setError(null)
 	const apiKey = import.meta.env.VITE_HENRIK_API_KEY
 
+	// api call to fetch account data
 	const accountResponse = await fetch (
 	    `https://api.henrikdev.xyz/valorant/v1/account/${name}/${tag}`,
 	    {
@@ -65,6 +67,7 @@ function Tracker() {
 	    return
 	}
 
+	// api call to fetch rank data
 	const rankResponse = await fetch (
 	    `https://api.henrikdev.xyz/valorant/v3/mmr/${accountData.data.region}/${platform}/${name}/${tag}`,
 	    {
@@ -77,7 +80,8 @@ function Tracker() {
 	const rankData = await rankResponse.json()
 
 	await fetchMatches(accountData.data.region, name, tag, 'Competitive')
-	
+
+	//setting up the respective variables to their api calls
 	setPlayerRank(rankData)
 	setRegion(accountData.data.region)
 	setPlayerData(accountData)
@@ -92,9 +96,17 @@ function Tracker() {
 		placeholder="username#NA1"
 		value={username}
 		onChange={(e) => setUsername(e.target.value)}
-		onKeyDown={(e) => e.key === 'Enter' && searchPlayer()}
+		onKeyDown={(e) => {
+		    if(e.key === 'Enter') {
+			const [name, tag] = username.split('#')
+			searchPlayer(name, tag)
+		    }
+		}}
 	    />
-	    <button onClick={searchPlayer}>search</button>
+	    <button onClick={() => {
+			const [name, tag] = username.split('#')
+			searchPlayer(name, tag)
+		    }}>search</button>
 
 	    {loading && (
 		<div className="circle">
@@ -228,8 +240,9 @@ function Tracker() {
 								    {/*using slice() to not modify original array incase i want to use for something in the future*/}
 								    {match.players.blue.slice().sort((a, b) => b.stats.score - a.stats.score).map(player => {
 									const acs = Math.round(player.stats.score / match.metadata.rounds_played)
+									// added searchPlayer method call when clicking on a name from leaderboard
 									return (
-									    <tr key={player.puuid} onClick={() => console.log(player.name)} style={{ cursor: 'pointer' }}>
+									    <tr key={player.puuid} onClick={() => searchPlayer(player.name, player.tag)} style={{ cursor: 'pointer' }}>
 										<td>{player.name}#{player.tag}</td>
 										<td>{acs}</td>
 										<td>{player.stats.kills}</td>
@@ -244,7 +257,7 @@ function Tracker() {
 								    {match.players.red.slice().sort((a, b) => b.stats.score - a.stats.score).map(player => {
 									const acs = Math.round(player.stats.score / match.metadata.rounds_played)
 									return (
-									    <tr key={player.puuid} onClick={() => console.log(player.name)} style={{ cursor: 'pointer' }}>
+									    <tr key={player.puuid} onClick={() => searchPlayer(player.name, player.tag)} style={{ cursor: 'pointer' }}>
 										<td>{player.name}#{player.tag}</td>
 										<td>{acs}</td>
 										<td>{player.stats.kills}</td>
